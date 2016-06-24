@@ -188,3 +188,25 @@ func (c *Card) AddComment(text string) (*Action, error) {
 	newAction.client = c.client
 	return newAction, nil
 }
+
+// AddLabel will add a new label to the card
+// https://developers.trello.com/advanced-reference/card#post-1-cards-card-id-or-shortlink-labels
+func (c *Card) AddLabel(color, name string) (*Label, error) {
+	label := &Label{}
+
+	payload := url.Values{}
+	payload.Set("color", color)
+	payload.Set("name", name)
+
+	body, err := c.client.Post("/cards/"+c.Id+"/labels", payload)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(body, label); err != nil {
+		return nil, err
+	}
+	label.client = c.client
+	return label, nil
+}
+
