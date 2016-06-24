@@ -3,3 +3,4 @@ tests/env
 *.swo
 *.swp
 .idea
+test

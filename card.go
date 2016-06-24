@@ -18,6 +18,7 @@ package trello
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/url"
 )
 
@@ -35,7 +36,6 @@ type Card struct {
 	IdMembersVoted        []string `json:"idMembersVoted"`
 	ManualCoverAttachment bool     `json:"manualCoverAttachment"`
 	Closed                bool     `json:"closed"`
-	Pos                   int      `json:"pos"`
 	ShortLink             string   `json:"shortLink"`
 	DateLastActivity      string   `json:"dateLastActivity"`
 	ShortUrl              string   `json:"shortUrl"`
@@ -210,3 +210,26 @@ func (c *Card) AddLabel(color, name string) (*Label, error) {
 	return label, nil
 }
 
+func (c *Client) GetCardsByLabel(name string) ([]Card, error) {
+
+	type res struct {
+		Cards []Card `json:"cards"`
+	}
+
+	cards := &res{}
+
+	body, err := c.Get(fmt.Sprintf("/search?query=label:%v&modelTypes=cards", name))
+	if err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(body, cards); err != nil {
+		return nil, err
+	}
+
+	carr := cards.Cards
+	for _, card := range carr {
+		card.client = c
+	}
+	return carr, nil
+}
