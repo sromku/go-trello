@@ -210,10 +210,10 @@ func (c *Card) AddLabel(color, name string) (*Label, error) {
 	return label, nil
 }
 
-func (c *Client) GetCardsByLabel(name string) ([]Card, error) {
+func (c *Client) GetCardsByLabel(name string) ([]*Card, error) {
 
 	type res struct {
-		Cards []Card `json:"cards"`
+		Cards []*Card `json:"cards"`
 	}
 
 	cards := &res{}
